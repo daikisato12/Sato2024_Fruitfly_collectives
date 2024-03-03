@@ -26,10 +26,8 @@ g_parameter <-
   mapply(
     function(a, b, co) stat_function(fun=log_func, args=list(a, b), 
                                      aes(color = co)),
-    # ab$a, ab$b, sprintf("a=%.3f b=%.3f", ab$a, ab$b)
     log_param_a, log_param_b, as.factor(log_param_a)
   ) + 
-  # labs(color="b") +
   scale_color_discrete(name = "parameter a") +
   xlab("Time after stimulus (s)") +
   ylab("Probability to freeze") +
@@ -131,19 +129,11 @@ g_group_merge_speed_normbybeforestimave <-
   geom_vline(xintercept = 555, linetype = "dotted", col = "grey") +
   geom_vline(xintercept = 570, linetype = "dotted", col = "grey") +
   geom_vline(xintercept = 585, linetype = "dotted", col = "grey") +
-  # geom_point() +
   geom_line() +
   xlab("Time (min)") +
   ylab("Mean moving speed relative to\n the average during the initial 5 min") +
-  # scale_color_viridis_d(option = "D", name="Individual ID") +#, name = "Speed") +
-  # scale_color_manual(values = c(pal_uchicago("default")(2)[2], "#d69090", pal_uchicago("default")(2)[1])) +#values = viridis(3)[1:2]) +
-  # scale_color_manual(values = rev(pal_uchicago("default")(2))) +#values = viridis(3)[1:2]) +
   scale_color_manual(values = c("#A2A0A2", "#A93439")) +#values = viridis(3)[1:2]) +
-  # scale_color_identity() +#values = viridis(3)[1:2]) +
-  # coord_cartesian(xlim = c(150, 300), ylim = c(1.35, 1.6)) +
   scale_x_continuous(breaks = seq(0, 600, by = 60), labels = seq(0, 10, by = 1)) +
-  # coord_cartesian(xlim = c(45, 420), ylim = c(1, 5)) +
-  # facet_wrap(~ rep) +
   theme_bw() +
   theme(legend.title = element_blank(),
         legend.position = c(0.16, 0.2),
@@ -159,22 +149,14 @@ g_group_merge_speed_normbybeforestimave_s5min <-
            group_by(stim_time, var) %>%
            dplyr::summarize(speed = mean(speed, na.rm = TRUE)),
          aes(x = stim_time, y = speed, col = var)) +
-  # geom_point() +
   geom_line(size = 1) +
   geom_hline(yintercept = 1, linetype = "dotted") +
   annotate("rect", xmin = 0, xmax = 0.5, ymin = -Inf, ymax = Inf, alpha = 0.4) +
-  # scale_color_viridis_d(option = "D", name="Individual ID") +#, name = "Speed") +
-  # scale_color_manual(values = rev(pal_uchicago("default")(2))) +#values = viridis(3)[1:2]) +
-  # scale_color_manual(values = c(pal_uchicago("default")(2)[2], "#d69090", pal_uchicago("default")(2)[1])) +#values = viridis(3)[1:2]) +
-  # scale_color_manual(values = rev(pal_uchicago("default")(2))) +#values = viridis(3)[1:2]) +
   scale_color_manual(values = c("#A2A0A2", "#A93439")) +#values = viridis(3)[1:2]) +
-  # coord_cartesian(xlim = c(150, 300), ylim = c(1.35, 1.6)) +
   scale_x_continuous(breaks = seq(0, 15, by = 3)) +
   xlab("Time after stimulus (s)") +
   ylab("Mean moving speed relative to\n the average during the initial 5 min") +
   coord_cartesian(xlim = c(-0.5, 15)) +
-  # coord_cartesian(ylim = c(0.8, 1)) +
-  # facet_wrap(~ rep) +
   theme_bw() +
   theme(legend.title = element_blank(),
         legend.position = c(0.7, 0.2),
@@ -222,7 +204,6 @@ list_strain_d <- unique(df_group_socialcontagion_diversity_pos3_speed_beforestim
 ## calculate mean of two strains ##
 dfd_group_socialcontagion_diversity_mean <- data.frame()
 for (i in list_strain_d){
-  # i <- list_strain_d[2]
   strain1 <- str_split(i, "_")[[1]][1]
   strain2 <- str_split(i, "_")[[1]][2]
   if(strain1 != strain2){
@@ -304,8 +285,6 @@ dfd_group_socialcontagion_diversity_mean2_fitness <-
   group_by(strain, type, mixed) %>%
   dplyr::summarize(virtual_fitness = sum(virtual_fitness)) %>%
   ungroup() %>%
-  # pivot_wider(names_from = type, values_from = virtual_fitness) %>%
-  # mutate(Overyield = Observed - Expected)
   mutate(Overyield = virtual_fitness - lag(virtual_fitness),
          strain1 = str_split(strain, "_") %>% map_chr(1),
          strain2 = str_split(strain, "_") %>% map_chr(2))
@@ -319,9 +298,6 @@ g_mix_group_socialcontagion_diversity_virtual_fitness <-
   geom_path(aes(group = strain), color = "gray", linewidth = 0.4) +
   geom_point(aes(shape = type), show.legend = F, size = 2) + 
   ggpubr::stat_compare_means(paired = TRUE, size = 2.5) +
-  # xlab("Time after stimulus (s)") +
-  # ylab("Moving speed relative to \n the average at 0.5 s before stimulus") +
-  # ylab("Moving speed relative to the average before stimulus") +
   scale_color_manual(values = c("#9e8896", "#874c70"), guide = "none") +#values = viridis(3)[1:2]) +
   scale_shape_manual(values = c(17, 16)) +
   scale_alpha_manual(values = c(0.4, 1)) +
