@@ -80,7 +80,7 @@ g_d_f10min_speed_gd_onlymix_normbyf5minave_allmean <-
   geom_vline(xintercept=540, linetype="dotted", alpha=.6, linewidth=.4) +
   geom_vline(xintercept=555, linetype="dotted", alpha=.6, linewidth=.4) +
   geom_vline(xintercept=570, linetype="dotted", alpha=.6, linewidth=.4) +
-  geom_vline(xintercept=585, linetype="dotted", alpha=.6, linewidth=.4) +  scale_color_viridis_d(direction = -1) +
+  geom_vline(xintercept=585, linetype="dotted", alpha=.6, linewidth=.4) +  
   xlab("Time (min)") +
   ylab("Moving speed relative to \n the average during the initial 5 min") +
   scale_x_continuous(breaks = seq(0, 600, 60), labels = seq(0, 10, 1)) +
