@@ -1,10 +1,10 @@
 #### load packages ####
 library(tidyverse)
 library(arrow)
-# library(car)
-# library(lmerTest)
-# library(ggsci)
-# library(ggpmisc)
+library(car)
+library(lme4)
+library(lmerTest)
+library(ggpmisc)
 library(patchwork)
 
 #### load dataset ####
@@ -33,7 +33,7 @@ glmer_res <- lme4::glmer(change_posture ~ motion_cue_diff3*strain*sex +
                      filter(stimuli == "+10.0", change_posture %in% c("ss", "sw")) %>%
                      mutate(change_posture = as.factor(change_posture)),
                    family="binomial")
-anova_res <- Anova(glmer_res)
+anova_res <- car::Anova(glmer_res)
 anova_res
 
 ##### male #####
@@ -123,15 +123,6 @@ df_difflsmeans_motion_cue_exit_intercept_female2_norpA <- df_difflsmeans_motion_
   bind_rows(data.frame(strain1 = "norpA",
                        strain2 = "norpA"))
 
-# df_difflsmeans_motion_cue_exit_intercept_female2_random <- df_difflsmeans_motion_cue_exit_intercept_female2 %>%
-#   dplyr::mutate(strain_tmp = if_else(strain1 == "random", strain2, strain1),
-#                 strain2 = if_else(strain1 == "random", "random", strain2),
-#                 Estimate = if_else(strain1 == "random", Estimate, -Estimate),
-#                 strain1 = if_else(strain1 == "random", strain_tmp, strain1)) %>%
-#   filter(strain2 == "random") %>%
-#   bind_rows(data.frame(strain1 = "random",
-#                        strain2 = "random"))
-
 df_s5min_motion_cue_exit_intercept_female_order <- df_motion_cue_exit_coeff_trial %>% 
   filter(sex == "Female") %>%
   group_by(strain) %>%
@@ -163,7 +154,6 @@ gg_s5min_stim_motion_cue_exit_strain <- ggplot(df_s5min_stim_freez_vis %>%
   coord_cartesian(xlim=c(-40,60), ylim=c(0,1)) +
   scale_x_continuous(breaks = c(0, 50)) +
   scale_y_continuous(breaks = seq(0, 1, 0.2), expand = c(0, 0)) +
-  # scale_color_manual(values = c("#c97586","#2a83a2")) +
   scale_color_manual(values = c("#c17181", "#68aac3")) +
   xlab("Increase in motion cue") +
   ylab("Probability of freezing exit") +
@@ -178,33 +168,24 @@ ggsave("../figures/FigureS4a.png", gg_s5min_stim_motion_cue_exit_strain, w=10, h
 ##### Figure S4b1 male #####
 gg_s5min_motion_cue_exit_intercept_male <- 
   df_motion_cue_exit_coeff_trial %>% 
-  mutate(plot_col = case_when(#strain == "random" ~ "grey", 
-                              strain == "norpA" ~ "magenta", 
+  mutate(plot_col = case_when(strain == "norpA" ~ "magenta", 
                               TRUE ~ "black")) %>%
   filter(sex =="Male") %>%
   ggplot(aes(x = reorder(strain, motion_cue_exit_intercept, na.rm = TRUE),
-             y = motion_cue_exit_intercept, col = plot_col)) +#, col = plot_col)) +
-  # ggplot(aes(x = reorder(strain, rep(.[.$n_inds=="Single",]$freezing_keep_prob, each=2), na.rm = TRUE), y = freezing_keep_prob, col = n_inds)) +
-  # geom_point(size=1, alpha=0.2) +
+             y = motion_cue_exit_intercept, col = plot_col)) +
   stat_summary(fun.data = "mean_se", geom = "errorbar", width = 0) +
   stat_summary(fun.data = "mean_se", geom = "point") +
-  # annotate(geom="text", label=sprintf("italic('P')~'%s'", p),parse=TRUE, x=8, y=0.9, size=5) +
   coord_cartesian(ylim = c(-80, 30)) +
-  scale_color_manual(values = c("black", "magenta")) + #"#25b7c0", 
-  # scale_color_manual(values=rev(pal_uchicago("default")(2))) +
+  scale_color_manual(values = c("black", "magenta")) + 
   xlab("Strain") +
   ylab(expression("Reaction threshold" ~ (beta[0]))) +
-  # facet_grid(~ type, scales = "free_x", space="free") +
   theme_bw() +
-  theme(axis.text.x = element_blank(),#axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-        # panel.grid = element_blank(),
+  theme(axis.text.x = element_blank(),
         legend.position = 'none')
 gg_s5min_motion_cue_exit_intercept_male
 
 gg_s5min_motion_cue_exit_intercept_male_sig <- 
   ggplot(df_difflsmeans_motion_cue_exit_intercept_male2_norpA %>%
-  # ggplot(bind_rows(df_difflsmeans_motion_cue_exit_intercept_male2_norpA, 
-  #                  df_difflsmeans_motion_cue_exit_intercept_male2_random) %>%
     add_column(y = "value") %>%
     dplyr::rename(P = `Pr(>|t|)`) %>%
     dplyr::mutate(strain2 = str_replace(strain2, "norpA", "vs. norpA"),
@@ -222,8 +203,7 @@ gg_s5min_motion_cue_exit_intercept_male_sig <-
         axis.text = element_blank(),
         axis.ticks.y = element_blank(), 
         strip.background = element_blank())#,
-# legend.position = "top")
-gg_s5min_motion_cue_exit_intercept_male_sig
+
 
 # gg_s5min_motion_cue_exit_intercept_male_norpA_sig
 # gg_s5min_motion_cue_exit_intercept_male_random_sig
@@ -235,57 +215,29 @@ gg_s5min_motion_cue_exit_intercept_male_sum <-
 gg_s5min_motion_cue_exit_intercept_male_sum
 ggsave("../figures/FigureS4b1_male.pdf", gg_s5min_motion_cue_exit_intercept_male_sum, w = 6, h = 2)
 
-# gg_s5min_stim_motion_cue_exit <- df_motion_cue_exit_coeff_trial %>% 
-#   # filter(strain != "norpA") %>%
-#   mutate(plot_col = case_when(strain == "random" ~ "grey", 
-#                               strain == "norpA" ~ "magenta", 
-#                               TRUE ~ "black")) %>%
-#   ggplot(aes(x = reorder(strain, motion_cue_exit_intercept, na.rm = TRUE), 
-#              y = motion_cue_exit_intercept, col = plot_col)) +
-#   stat_summary(fun.data = "mean_se", geom = "errorbar", width = 0) +
-#   stat_summary(fun.data = "mean_se", geom = "point") +
-#   scale_color_manual(values = c("black", "magenta")) + #"#25b7c0", 
-#   xlab("Strain") +
-#   ylab(expression("Reaction threshold" ~ (beta[0]))) +
-#   facet_wrap( ~ sex, nrow = 2, strip.position = "left") +
-#   theme_bw() +
-#   theme(axis.text.x = element_blank(),
-#         legend.position = 'none',
-#         strip.text = element_text(size = 11),
-#         strip.background = element_blank(),
-#         strip.placement = "outside")
-# gg_s5min_stim_motion_cue_exit
 
 ##### Figure S4b2 female #####
 gg_s5min_motion_cue_exit_intercept_female <- 
   df_motion_cue_exit_coeff_trial %>% 
-  mutate(plot_col = case_when(#strain == "random" ~ "grey", 
+  mutate(plot_col = case_when(
     strain == "norpA" ~ "magenta", 
     TRUE ~ "black")) %>%
   filter(sex =="Female") %>%
   ggplot(aes(x = reorder(strain, motion_cue_exit_intercept, na.rm = TRUE),
-             y = motion_cue_exit_intercept, col = plot_col)) +#, col = plot_col)) +
-  # ggplot(aes(x = reorder(strain, rep(.[.$n_inds=="Single",]$freezing_keep_prob, each=2), na.rm = TRUE), y = freezing_keep_prob, col = n_inds)) +
-  # geom_point(size=1, alpha=0.2) +
+             y = motion_cue_exit_intercept, col = plot_col)) +
   stat_summary(fun.data = "mean_se", geom = "errorbar", width = 0) +
   stat_summary(fun.data = "mean_se", geom = "point") +
-  # annotate(geom="text", label=sprintf("italic('P')~'%s'", p),parse=TRUE, x=8, y=0.9, size=5) +
   coord_cartesian(ylim = c(-80, 30)) +
-  scale_color_manual(values = c("black", "magenta")) + #"#25b7c0", 
-  # scale_color_manual(values=rev(pal_uchicago("default")(2))) +
+  scale_color_manual(values = c("black", "magenta")) + 
   xlab("Strain") +
   ylab(expression("Reaction threshold" ~ (beta[0]))) +
-  # facet_grid(~ type, scales = "free_x", space="free") +
   theme_bw() +
-  theme(axis.text.x = element_blank(),#axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-        # panel.grid = element_blank(),
+  theme(axis.text.x = element_blank(),
         legend.position = 'none')
 gg_s5min_motion_cue_exit_intercept_female
 
 gg_s5min_motion_cue_exit_intercept_female_sig <- 
   ggplot(df_difflsmeans_motion_cue_exit_intercept_female2_norpA %>%
-           # ggplot(bind_rows(df_difflsmeans_motion_cue_exit_intercept_female2_norpA, 
-           #                  df_difflsmeans_motion_cue_exit_intercept_female2_random) %>%
            add_column(y = "value") %>%
            dplyr::rename(P = `Pr(>|t|)`) %>%
            dplyr::mutate(strain2 = str_replace(strain2, "norpA", "vs. norpA"),
@@ -302,12 +254,9 @@ gg_s5min_motion_cue_exit_intercept_female_sig <-
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
         axis.ticks.y = element_blank(), 
-        strip.background = element_blank())#,
-# legend.position = "top")
+        strip.background = element_blank())
 gg_s5min_motion_cue_exit_intercept_female_sig
 
-# gg_s5min_motion_cue_exit_intercept_female_norpA_sig
-# gg_s5min_motion_cue_exit_intercept_female_random_sig
 
 gg_s5min_motion_cue_exit_intercept_female_sum <- 
   gg_s5min_motion_cue_exit_intercept_female_sig +
@@ -324,24 +273,21 @@ gg_s5min_stim_motion_cue_exit_vs_sex <- df_motion_cue_exit_coeff %>%
   filter(strain != "norpA") %>%
   ggplot(aes(x = motion_cue_exit_intercept_Male, y = motion_cue_exit_intercept_Female)) +
   geom_abline(slope = 1, linetype = "dashed") +
-  stat_smooth(linewidth = 2, color= "grey", method = "lm") +#, formula = y ~ poly(x, degree = 2, raw = TRUE) - 1) + #formula = y ~ log(x)) + #method = "lm") +
+  stat_smooth(linewidth = 2, color= "grey", method = "lm") +
   ggpmisc::stat_poly_eq(formula = y ~ x,
-                        aes(label = paste(#stat(eq.label),
+                        aes(label = paste(
                           after_stat(rr.label),
                           stat(p.value.label),
                           sep = "~~~")),
                         label.x = "left",
                         label.y = "top",
                         parse = TRUE, size = 4) +
-  geom_point(aes(col = plot_col), alpha = 0.5, size = 4, shape = 16) + #aes(col = plot_col), 
-  # scale_color_manual(values = tol.rainbow(length(unique(dfm_f10min_motion_cue_exit_intercept_change_ig$strain))),
-  #                    name="Strain") +
+  geom_point(aes(col = plot_col), alpha = 0.5, size = 4, shape = 16) + 
   scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 4)) +
   scale_color_manual(values = c("#c17181", "#68aac3")) +
-  # coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
-  labs(x = expression("Reaction threshold" ~ (beta[0]) ~ "to motion cue in male"),
-       y = expression("Reaction threshold" ~ (beta[0]) ~ "to motion cue in female")) +
+  labs(x = expression("Visual responsiveness to motion cue" ~ (beta[0]) ~ "in male"),
+       y = expression("Visual responsiveness to motion cue" ~ (beta[0]) ~ "in female")) +
   theme_bw() +
   theme(legend.position = 'none')
 

@@ -137,23 +137,16 @@ gg_f5min_nnd_male <- df_f5min_nnd_rand %>%
   mutate(plot_col = case_when(strain == "random" ~ "grey", 
                               strain == "norpA" ~ "magenta", 
                               TRUE ~ "black")) %>%
-  # transform(type = factor(type, levels=c("DGRP strains","*"))) %>%
   filter(sex =="Male") %>%
-  ggplot(aes(x = reorder(strain, nnd, na.rm = TRUE), y = nnd, col = plot_col)) +#, col = plot_col)) +
-  # ggplot(aes(x = reorder(strain, rep(.[.$n_inds=="Single",]$freezing_keep_prob, each=2), na.rm = TRUE), y = freezing_keep_prob, col = n_inds)) +
-  # geom_point(size=1, alpha=0.2) +
+  ggplot(aes(x = reorder(strain, nnd, na.rm = TRUE), y = nnd, col = plot_col)) +
   stat_summary(fun.data = "mean_se", geom = "errorbar", width = 0) +
   stat_summary(fun.data = "mean_se", geom = "point") +
-  # annotate(geom="text", label=sprintf("italic('P')~'%s'", p),parse=TRUE, x=8, y=0.9, size=5) +
   coord_cartesian(ylim = c(4, 8)) +
   scale_color_manual(values = c("black", "#25b7c0", "magenta")) +
-  # scale_color_manual(values=rev(pal_uchicago("default")(2))) +
   xlab("Strain") +
   ylab("NND (mm)") +
-  # facet_grid(~ type, scales = "free_x", space="free") +
   theme_bw() +
-  theme(axis.text.x = element_blank(),#axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-        # panel.grid = element_blank(),
+  theme(axis.text.x = element_blank(),
         legend.position = 'none')
 gg_f5min_nnd_male
 
@@ -175,8 +168,7 @@ gg_f5min_nnd_male_sig <- ggplot(bind_rows(df_difflsmeans_nnd_male2_norpA,
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
         axis.ticks.y = element_blank(), 
-        strip.background = element_blank())#,
-        # legend.position = "top")
+        strip.background = element_blank())
 gg_f5min_nnd_male_sig
 
 # gg_f5min_nnd_male_norpA_sig
@@ -195,23 +187,16 @@ gg_f5min_nnd_female <- df_f5min_nnd_rand %>%
                               strain == "norpA" ~ "magenta", 
                               TRUE ~ "black"),
          type = if_else(plot_col == "black", "DGRP strains", "*")) %>%
-  # transform(type = factor(type, levels=c("DGRP strains","*"))) %>%
   filter(sex =="Female") %>%
-  ggplot(aes(x = reorder(strain, nnd, na.rm = TRUE), y = nnd, col = plot_col)) +#, col = plot_col)) +
-  # ggplot(aes(x = reorder(strain, rep(.[.$n_inds=="Single",]$freezing_keep_prob, each=2), na.rm = TRUE), y = freezing_keep_prob, col = n_inds)) +
-  # geom_point(size=1, alpha=0.2) +
+  ggplot(aes(x = reorder(strain, nnd, na.rm = TRUE), y = nnd, col = plot_col)) +
   stat_summary(fun.data = "mean_se", geom = "errorbar", width = 0) +
   stat_summary(fun.data = "mean_se", geom = "point") +
-  # annotate(geom="text", label=sprintf("italic('P')~'%s'", p),parse=TRUE, x=8, y=0.9, size=5) +
   coord_cartesian(ylim = c(4, 8)) +
   scale_color_manual(values = c("black", "#25b7c0", "magenta")) +
-  # scale_color_manual(values=rev(ggsci::pal_uchicago("default")(2))) +
   xlab("Strain") +
   ylab("NND (mm)") +
-  # facet_grid(~ type, scales = "free_x", space="free") +
   theme_bw() +
-  theme(axis.text.x = element_blank(),#axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-        # panel.grid = element_blank(),
+  theme(axis.text.x = element_blank(),
         legend.position = 'none')
 gg_f5min_nnd_female
 
@@ -234,7 +219,6 @@ gg_f5min_nnd_female_sig <- ggplot(bind_rows(df_difflsmeans_nnd_female2_norpA,
         axis.text = element_blank(),
         axis.ticks.y = element_blank(), 
         strip.background = element_blank())#,
-        # legend.position = "top")
 gg_f5min_nnd_female_sig
 
 # gg_f5min_nnd_female_norpA_sig
@@ -248,14 +232,6 @@ gg_f5min_nnd_female_sum
 ggsave("../figures/FigureS2a_2.pdf", gg_f5min_nnd_female_sum, w = 6, h = 3)
 
 
-# gg_f5min_nnd_sum <-
-#   gg_f5min_nnd_female_sum /
-#   gg_f5min_nnd_male_sum +
-#   plot_layout(nrow = 2, ncol = 2)
-# 
-# ggsave("../figures/FigureS2.pdf", gg_f5min_nnd_sum, w = 6, h = 6)
-
-
 ##### S2b #####
 gg_f5min_nnd_vs_sex <- df_f5min_nnd_rand %>%
   filter(str_detect(strain, "DGRP")) %>%
@@ -265,7 +241,7 @@ gg_f5min_nnd_vs_sex <- df_f5min_nnd_rand %>%
   mutate(plot_col = if_else(nnd_Male / nnd_Female < 1, "over", "under")) %>%
   ggplot(aes(x = nnd_Male, y = nnd_Female)) +
   geom_abline(slope = 1, linetype = "dashed") +
-  stat_smooth(linewidth = 2, color= "grey", method = "lm") +#, formula = y ~ poly(x, degree = 2, raw = TRUE) - 1) + #formula = y ~ log(x)) + #method = "lm") +
+  stat_smooth(linewidth = 2, color= "grey", method = "lm") +
   geom_point(aes(col = plot_col), alpha = 0.5, size = 4, shape = 16) +
   ggpmisc::stat_poly_eq(formula = y ~ x,
                         aes(label = paste(
@@ -277,12 +253,11 @@ gg_f5min_nnd_vs_sex <- df_f5min_nnd_rand %>%
                         parse = TRUE, size = 4) +
   scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 4)) +
-  # scale_color_manual(values = c("#2a83a2","#c97586")) +
   scale_color_manual(values = c("#c17181", "#68aac3")) +
-  # coord_cartesian(xlim = c(0,1), ylim = c(0,1)) +
   xlab("NND (mm)\nMale") +
   ylab("NND (mm)\nFemale") +
   theme_bw() +
   theme(legend.position = 'none')
 gg_f5min_nnd_vs_sex
+
 ggsave("../figures/FigureS2b.pdf", gg_f5min_nnd_vs_sex, w = 3, h = 3)

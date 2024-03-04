@@ -75,6 +75,7 @@ g_f10min_sg_speed_normbyf5minave_allmean <-
   xlab("Time (min)") +
   ylab("Moving speed relative to \n the average during the initial 5 min") +
   scale_x_continuous(breaks = seq(0, 600, 60), labels = seq(0, 10, 1)) +
+  # scale_color_manual(values = rev(ggsci::pal_uchicago("default")(2))) +#values = viridis(3)[1:2]) +
   scale_color_manual(values = c("#aaaaa9", "#b3343a")) +
   facet_wrap(~ sex, nrow = 2) +
   theme_bw() +
@@ -143,6 +144,7 @@ gg_s5min_stim_motion_cue_exit <- ggplot(df_s5min_stim_freez_vis %>%
   geom_smooth(aes(x = motion_cue_diff3, y = change_posture),
               method = "glm", method.args = list(family = "binomial")) +
   coord_cartesian(xlim = c(-40, 80), ylim = c(0, 1)) +
+  # scale_color_manual(values = c("#c97586","#2a83a2")) +
   scale_color_manual(values = c("#c17181", "#68aac3")) +
   xlab("Increase in motion cue") +
   ylab("Probability of freezing exit") +

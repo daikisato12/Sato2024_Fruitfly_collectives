@@ -244,12 +244,12 @@ g_freezing_TNT_R9B08 <- ggplot(dfm_s5min_2995_5990_freezing_duration %>%
 g_freezing_TNT_R9B08
 
 
-###### visual reactivity Ptp99ARNAi_R9B08 ######
+###### visual responsiveness Ptp99ARNAi_R9B08 ######
 dfm_plot <- 
   dfm_motion_cue_exit_coeff_trial2 %>%
   pivot_longer(cols = contains("motion_cue"), names_to = "var", values_to = "value")
 my_comparisons_Ptp99ARNAi_R9B08 <- list( c("NA_R9B08", "Ptp99ARNAi_R9B08"), c("Ptp99ARNAi_R9B08", "Ptp99ARNAi_NA") )
-g_visual_reactivity_Ptp99ARNAi_R9B08 <- 
+g_visual_responsiveness_Ptp99ARNAi_R9B08 <- 
   ggplot(dfm_plot %>%
            filter(strain %in% c("NA_R9B08", "Ptp99ARNAi_R9B08", "Ptp99ARNAi_NA"),
                   sex == "Female", var == "motion_cue_exit_intercept") %>%
@@ -261,21 +261,21 @@ g_visual_reactivity_Ptp99ARNAi_R9B08 <-
   scale_color_manual(values = c("#5a5359", "#deb068", "#5a5359")) +
   scale_x_discrete(labels = expression(italic("R9B08-GAL4"), italic("R9B08>Ptp99A-RNAi"), italic("Ptp99A-RNAi"))) +
   coord_cartesian(ylim = c(-4.5, -2.2)) +
-  ylab("Visual reactivity") +
+  ylab("Visual responsiveness") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_blank(),
         legend.position = "none")
 
-g_visual_reactivity_Ptp99ARNAi_R9B08
+g_visual_responsiveness_Ptp99ARNAi_R9B08
 
 
-###### visual reactivity TNT_Ptp99A ######
+###### visual responsiveness TNT_Ptp99A ######
 dfm_plot <- 
   dfm_motion_cue_exit_coeff_trial2 %>%
   pivot_longer(cols = contains("motion_cue"), names_to = "var", values_to = "value")
 my_comparisons_TNT_Ptp99A <- list( c("IMPTNT_Ptp99A", "TNT_Ptp99A") )
-g_visual_reactivity_TNT_Ptp99A <- 
+g_visual_responsiveness_TNT_Ptp99A <- 
   ggplot(dfm_plot %>%
            filter(strain %in% c("IMPTNT_Ptp99A", "TNT_Ptp99A"),
                   sex == "Female", var == "motion_cue_exit_intercept") %>%
@@ -287,21 +287,21 @@ g_visual_reactivity_TNT_Ptp99A <-
   scale_color_manual(values = c("#5a5359", "#deb068", "#5a5359")) +
   scale_x_discrete(labels = expression(italic("Ptp99A>IMPTNT"), italic("Ptp99A>TNT"))) +
   coord_cartesian(ylim = c(-4.5, -2.2)) +
-  ylab("Visual reactivity") +
+  ylab("Visual responsiveness") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_blank(),
         legend.position = "none")
 
-g_visual_reactivity_TNT_Ptp99A
+g_visual_responsiveness_TNT_Ptp99A
 
 
-###### visual reactivity TNT_R9B08 ######
+###### visual responsiveness TNT_R9B08 ######
 dfm_plot <- 
   dfm_motion_cue_exit_coeff_trial2 %>%
   pivot_longer(cols = contains("motion_cue"), names_to = "var", values_to = "value")
 my_comparisons_TNT_R9B08 <- list( c("IMPTNT_R9B08", "TNT_R9B08") )
-g_visual_reactivity_TNT_R9B08 <- ggplot(dfm_plot %>%
+g_visual_responsiveness_TNT_R9B08 <- ggplot(dfm_plot %>%
                          filter(strain %in% c("IMPTNT_R9B08", "TNT_R9B08"),
                                 sex == "Female", var == "motion_cue_exit_intercept") %>%
                          transform(strain = factor(strain, levels = c("IMPTNT_R9B08", "TNT_R9B08"))),
@@ -312,18 +312,18 @@ g_visual_reactivity_TNT_R9B08 <- ggplot(dfm_plot %>%
   scale_color_manual(values = c("#5a5359", "#deb068", "#5a5359")) +
   scale_x_discrete(labels = expression(italic("R9B08>IMPTNT"), italic("R9B08>TNT"))) +
   coord_cartesian(ylim = c(-4.5, -2.2)) +
-  ylab("Visual reactivity") +
+  ylab("Visual responsiveness") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         axis.title.x = element_blank(),
         legend.position = "none")
 
-g_visual_reactivity_TNT_R9B08
+g_visual_responsiveness_TNT_R9B08
 
 
 g3c <- 
   g_freezing_TNT_R9B08 + g_freezing_TNT_Ptp99A + g_freezing_Ptp99ARNAi_R9B08 +
-  g_visual_reactivity_TNT_R9B08 + g_visual_reactivity_TNT_Ptp99A + g_visual_reactivity_Ptp99ARNAi_R9B08 +
+  g_visual_responsiveness_TNT_R9B08 + g_visual_responsiveness_TNT_Ptp99A + g_visual_responsiveness_Ptp99ARNAi_R9B08 +
   plot_layout(nrow = 2, ncol = 3, widths = c(0.66, 0.66, 1), heights = c(1.5, 1))
 g3c
 ggsave("../figures/Figure3c.pdf", g3c, w = 6, h = 6)

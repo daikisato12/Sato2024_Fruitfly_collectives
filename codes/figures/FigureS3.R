@@ -1,10 +1,9 @@
 #### load packages ####
 library(tidyverse)
 library(arrow)
-# library(car)
-# library(lmerTest)
-# library(ggsci)
-# library(ggpmisc)
+library(car)
+library(lmerTest)
+library(ggpmisc)
 library(patchwork)
 
 #### load dataset ####
@@ -59,7 +58,6 @@ gig_s5min_freezing_duration_sex <- df_s5min_freezing_duration %>%
   stat_summary(fun.data = "mean_se", geom = "errorbar", width = 0) +
   stat_summary(fun.data = "mean_se", geom = "point") +
   scale_y_continuous(breaks = seq(0, 15, 5), expand = c(0, 0)) +
-  # scale_color_manual(values=rev(ggsci::pal_uchicago("default")(2))) +
   scale_color_manual(values = c("#aaaaa9", "#b3343a")) +
   xlab("Strain") +
   ylab("Freezing duration (s)") +
@@ -98,7 +96,7 @@ gig_s5min_freezing_duration_vs_group <- df_s5min_freezing_duration %>%
   mutate(plot_col = if_else(freezing_duration_Group / freezing_duration_Single > 1, "over", "under")) %>%
   ggplot(aes(x=freezing_duration_Single, y=freezing_duration_Group)) +
   geom_abline(slope = 1, linetype = "dashed") +
-  stat_smooth(linewidth = 2, color= "grey", method = "lm") +#, formula = y ~ poly(x, degree = 2, raw = TRUE) - 1) + #formula = y ~ log(x)) + #method = "lm") +
+  stat_smooth(linewidth = 2, color= "grey", method = "lm") +
   geom_point(aes(col = plot_col, shape = sex), alpha=0.5, size=4) +
   ggpmisc::stat_poly_eq(formula = y ~ x,
                         aes(label = paste(
@@ -109,8 +107,7 @@ gig_s5min_freezing_duration_vs_group <- df_s5min_freezing_duration %>%
                         label.y = "top",
                         parse = TRUE, size = 4) +
   scale_x_continuous(breaks = seq(0, 15, 5), expand = c(0, 0)) +
-  scale_y_continuous(breaks = seq(0, 15, 5), expand = c(0, 0)) +  # scale_color_manual(values = c("#2a83a2","#c97586")) +
-  # scale_color_manual(values = c("#a25768","#71686c")) +
+  scale_y_continuous(breaks = seq(0, 15, 5), expand = c(0, 0)) +
   scale_color_manual(values = c("#b3343a", "#aaaaa9")) +
   coord_cartesian(xlim = c(0, 15), ylim = c(0, 15)) +
   xlab("Freezing duration (s)\nSingle flies") +
@@ -118,7 +115,6 @@ gig_s5min_freezing_duration_vs_group <- df_s5min_freezing_duration %>%
   facet_wrap(~ sex, nrow = 1) +
   theme_bw() +
   theme(legend.position = 'none',
-        # axis.text.x = element_text(angle = 45, hjust = 1.2, vjust = 1.3),
         strip.background = element_blank(),
         panel.spacing = unit(0.7, "lines"))
 gig_s5min_freezing_duration_vs_group
@@ -141,7 +137,7 @@ gig_s5min_freezing_duration_vs_sex <- df_s5min_freezing_duration %>%
   mutate(plot_col = if_else(freezing_duration_Male / freezing_duration_Female < 1, "over", "under")) %>%
   ggplot(aes(x = freezing_duration_Male, y = freezing_duration_Female)) +
   geom_abline(slope = 1, linetype = "dashed") +
-  stat_smooth(linewidth = 2, color= "grey", method = "lm") +#, formula = y ~ poly(x, degree = 2, raw = TRUE) - 1) + #formula = y ~ log(x)) + #method = "lm") +
+  stat_smooth(linewidth = 2, color= "grey", method = "lm") +
   geom_point(aes(col = plot_col), alpha = 0.5, size = 4, shape = 16) +
   ggpmisc::stat_poly_eq(formula = y ~ x,
                         aes(label = paste(
@@ -151,10 +147,8 @@ gig_s5min_freezing_duration_vs_sex <- df_s5min_freezing_duration %>%
                         label.x = "left",
                         label.y = "top",
                         parse = TRUE, size = 4) +
-  # scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
-  # scale_y_continuous(breaks = scales::pretty_breaks(n = 4)) +
   scale_x_continuous(breaks = seq(0, 15, 5), expand = c(0, 0)) +
-  scale_y_continuous(breaks = seq(0, 15, 5), expand = c(0, 0)) +  # scale_color_manual(values = c("#2a83a2","#c97586")) +
+  scale_y_continuous(breaks = seq(0, 15, 5), expand = c(0, 0)) +
   scale_color_manual(values = c("#c17181", "#68aac3")) +
   coord_cartesian(xlim = c(0, 15), ylim = c(0, 15)) +
   xlab("Freezing duration (s)\nMale") +
@@ -162,7 +156,6 @@ gig_s5min_freezing_duration_vs_sex <- df_s5min_freezing_duration %>%
   facet_wrap(~ n_inds, ncol = 2) +
   theme_bw() +
   theme(legend.position = 'none',
-        # axis.text.x = element_text(angle = 45, hjust = 1.2, vjust = 1.3),
         strip.background = element_blank(),
         panel.spacing = unit(0.7, "lines"))
 gig_s5min_freezing_duration_vs_sex
@@ -171,7 +164,6 @@ gig_s5min_freezing_duration_vs_sex
 gig_s5min_freezing_duration <-
   gig_s5min_freezing_duration_sex /
   (gig_s5min_freezing_duration_vs_group | gig_s5min_freezing_duration_vs_sex) #+
-# plot_layout(height = c(1.4, 1))
-# gig_s5min_freezing_duration
-ggsave("../figures/FigureS3.pdf", gig_s5min_freezing_duration, w = 6, h = 6)
+gig_s5min_freezing_duration
 
+ggsave("../figures/FigureS3.pdf", gig_s5min_freezing_duration, w = 6, h = 6)

@@ -1,10 +1,9 @@
 #### load packages ####
 library(tidyverse)
 library(arrow)
-# library(car)
-# library(lmerTest)
-# library(ggsci)
-# library(ggpmisc)
+library(car)
+library(lmerTest)
+library(ggpmisc)
 library(patchwork)
 
 #### load dataset ####
@@ -32,8 +31,8 @@ sg2_single_female / (sg2_single_female + se2_single_female/r)
 
 ###### calculate heritability single female with Hoffmann and Parsons (1988) method ######
 
-n <- 104
-(n*sg2_single_female - se2_single_female) / (n*sg2_single_female + (n-1)*se2_single_female) #t_single_female
+# n <- 104
+# (n*sg2_single_female - se2_single_female) / (n*sg2_single_female + (n-1)*se2_single_female) #t_single_female
 
 
 ##### heritability group female #####
@@ -45,8 +44,8 @@ sg2_group_female / (sg2_group_female + se2_group_female/r)
 
 ###### calculate heritability group female with Hoffmann and Parsons (1988) method ######
 
-n <- 104
-(n*sg2_group_female - se2_group_female) / (n*sg2_group_female + (n-1)*se2_group_female) #t_group_female
+# n <- 104
+# (n*sg2_group_female - se2_group_female) / (n*sg2_group_female + (n-1)*se2_group_female) #t_group_female
 
 
 ##### heritability single male #####
@@ -58,8 +57,8 @@ sg2_single_male / (sg2_single_male + se2_single_male/r)
 
 ###### calculate heritability single male with Hoffmann and Parsons (1988) method ######
 
-n <- 104
-(n*sg2_single_male - se2_single_male) / (n*sg2_single_male + (n-1)*se2_single_male) #t_single_male
+# n <- 104
+# (n*sg2_single_male - se2_single_male) / (n*sg2_single_male + (n-1)*se2_single_male) #t_single_male
 
 
 ##### heritability group male #####
@@ -71,8 +70,8 @@ sg2_group_male / (sg2_group_male + se2_group_male/r)
 
 ###### calculate heritability group male with Hoffmann and Parsons (1988) method ######
 
-n <- 104
-(n*sg2_group_male - se2_group_male) / (n*sg2_group_male + (n-1)*se2_group_male) #t_group_male
+# n <- 104
+# (n*sg2_group_male - se2_group_male) / (n*sg2_group_male + (n-1)*se2_group_male) #t_group_male
 
 
 #### make plot ####
@@ -110,7 +109,7 @@ gig_f5min_speed_vs_group <- df_f5min_speed %>%
   mutate(plot_col = if_else(speed_Group / speed_Single > 1, "over", "under")) %>%
   ggplot(aes(x=speed_Single, y=speed_Group)) +
   geom_abline(slope = 1, linetype = "dashed") +
-  stat_smooth(linewidth = 2, color= "grey", method = "lm") +#, formula = y ~ poly(x, degree = 2, raw = TRUE) - 1) + #formula = y ~ log(x)) + #method = "lm") +
+  stat_smooth(linewidth = 2, color= "grey", method = "lm") +
   geom_point(aes(col = plot_col, shape = sex), alpha=0.5, size=4) +
   ggpmisc::stat_poly_eq(formula = y ~ x,
                         aes(label = paste(
@@ -122,7 +121,6 @@ gig_f5min_speed_vs_group <- df_f5min_speed %>%
                         parse = TRUE, size = 4) +
   scale_x_continuous(breaks = seq(0, 10, 2), expand = c(0, 0)) +
   scale_y_continuous(breaks = seq(0, 10, 2), expand = c(0, 0)) +
-  # scale_color_manual(values = c("#a25768","#71686c")) +
   scale_color_manual(values = c("#b3343a", "#aaaaa9")) +
   coord_cartesian(xlim = c(0, 10), ylim = c(0, 10)) +
   xlab("Moving speed (mm/s)\nSingle flies") +
@@ -143,7 +141,7 @@ gig_f5min_speed_vs_sex <- df_f5min_speed %>%
   mutate(plot_col = if_else(speed_Male / speed_Female < 1, "over", "under")) %>%
   ggplot(aes(x = speed_Male, y = speed_Female)) +
   geom_abline(slope = 1, linetype = "dashed") +
-  stat_smooth(linewidth = 2, color= "grey", method = "lm") +#, formula = y ~ poly(x, degree = 2, raw = TRUE) - 1) + #formula = y ~ log(x)) + #method = "lm") +
+  stat_smooth(linewidth = 2, color= "grey", method = "lm") +
   geom_point(aes(col = plot_col), alpha = 0.5, size = 4, shape = 16) +
   ggpmisc::stat_poly_eq(formula = y ~ x,
                         aes(label = paste(
@@ -153,11 +151,8 @@ gig_f5min_speed_vs_sex <- df_f5min_speed %>%
                         label.x = "left",
                         label.y = "top",
                         parse = TRUE, size = 4) +
-  # scale_x_continuous(breaks = scales::pretty_breaks(n = 4)) +
-  # scale_y_continuous(breaks = scales::pretty_breaks(n = 4)) +
   scale_x_continuous(breaks = seq(0, 10, 2), expand = c(0, 0)) +
   scale_y_continuous(breaks = seq(0, 10, 2), expand = c(0, 0)) +
-  # scale_color_manual(values = c("#2a83a2","#c97586")) +
   scale_color_manual(values = c("#c17181", "#68aac3")) +
   coord_cartesian(xlim = c(0, 10), ylim = c(0, 10)) +
   xlab("Moving speed (mm/s)\nMale") +
@@ -172,8 +167,7 @@ gig_f5min_speed_vs_sex <- df_f5min_speed %>%
 
 gig_f5min_speed <-
   gig_f5min_speed_sex /
-  (gig_f5min_speed_vs_group | gig_f5min_speed_vs_sex) #+
-  # plot_layout(height = c(1.4, 1))
+  (gig_f5min_speed_vs_group | gig_f5min_speed_vs_sex)
 # gig_f5min_speed
-ggsave("../figures/FigureS1.pdf", gig_f5min_speed, w = 6, h = 6)
 
+ggsave("../figures/FigureS1.pdf", gig_f5min_speed, w = 6, h = 6)

@@ -147,7 +147,7 @@ g_motion_cue_ptp99a <- ggplot(
   scale_x_discrete(na.translate = FALSE) +
   scale_color_manual(values = c("#c0abbf", "#491c43")) +
   xlab("Genotype") +
-  ylab("Visual reactivity") +
+  labs(y = expression("Visual responsiveness to motion cue" ~ (beta[0]))) +  
   facet_wrap(~ sex, ncol = 2) +
   theme_bw() +
   theme(legend.title = element_blank(),
