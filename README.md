@@ -3,3 +3,8 @@ IN this repository you find codes used in Sato &amp; Takahashi (2024) Neurogenom
 
 # Codes
 All the scripts used to analyze data and make tables & figures are stored in `/codes/` directory. The `../data/` directory indicated in codes are currently provided via private links.
+
+# Tested environments
+- macOS Big Sur version 11.6.4
+- R version 4.3.0
+- Python 3.9.2
