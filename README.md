@@ -2,7 +2,7 @@
 IN this repository you find codes used in Sato &amp; Takahashi (2024) Neurogenomic variation enhances collective antipredator performance in _Drosophila_.
 
 # Codes
-All the scripts used to analyze data and make tables & figures are stored in `/codes/` directory. The `../data/` directory indicated in codes are currently provided via private links.
+All the scripts used to analyze data and make tables & figures are stored in `/codes/` directory. The behavioral and genomic dataset stored in `../data/` directory indicated in codes are currently provided via private links.
 
 # Tested environments
 - macOS Big Sur version 11.6.4
