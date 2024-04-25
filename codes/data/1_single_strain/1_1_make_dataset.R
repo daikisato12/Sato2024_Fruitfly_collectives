@@ -390,6 +390,16 @@ write_parquet(df_f5min_rand, "${dataset}/1_single_strain/parquet/df_f5min_rand.p
 # df_f5min_rand <- read_parquet("${dataset}/1_single_strain/parquet/df_f5min_rand.parquet") %>%
 #   ungroup()
 
+df_f5min_nnd <- df_f5min %>%
+  filter(n_inds == 6) %>%
+  group_by(prefix, date, place, strain, sex, trial, seconds_total) %>%
+  dplyr::mutate(speed_mean = mean(speed * 30 / 100, na.rm = T),
+                nnd = mean(nnd * 30 / 100, na.rm = T)) %>%
+  ungroup() %>%
+  group_by(prefix, date, place, strain, sex, trial) %>%
+  slice(which.min(speed_mean)) %>%
+  arrange(strain, sex, trial)
+
 df_f5min_nnd_rand <- 
   bind_rows(df_f5min_nnd, 
             df_f5min_rand) %>%
